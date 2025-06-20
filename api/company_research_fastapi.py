@@ -42,8 +42,8 @@ try:
     GOOGLE_DRIVE_AVAILABLE = True
     logger.info("Google Drive uploader imported successfully")
     # check if folder id exists in environment variable
-    if not os.getenv("GOOGLE_DRIVE_FOLDER_ID"):
-        raise ValueError("GOOGLE_DRIVE_FOLDER_ID environment variable is not set")
+    # if not os.getenv("GOOGLE_DRIVE_FOLDER_ID"):
+    #     raise ValueError("GOOGLE_DRIVE_FOLDER_ID environment variable is not set")
 except ImportError as e:
     GOOGLE_DRIVE_AVAILABLE = False
 

@@ -7,6 +7,15 @@ healthcheckPath = "/api/health"
 healthcheckTimeout = 300
 restartPolicyType = "always"
 
+# Volume mounts for persistent storage
+[[deploy.volumes]]
+mountPath = "/app/results"
+name = "results-storage"
+
+[[deploy.volumes]]
+mountPath = "/app/service_account.json"
+name = "service-account"
+
 [variables]
 # Ensure Python output appears in Railway logs
 PYTHONUNBUFFERED = "1"

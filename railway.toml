@@ -2,7 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "uvicorn api.company_research_fastapi:app --host 0.0.0.0 --port $PORT"
+startCommand = "./start.sh"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 300
 restartPolicyType = "always"

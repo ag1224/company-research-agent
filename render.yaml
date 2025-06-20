@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: company-research-api
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn api.company_research_fastapi:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: APOLLO_API_KEY
+        sync: false
+      - key: CORESIGNAL_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: GOOGLE_DRIVE_FOLDER_ID
+        sync: false
+      - key: APOLLO_BASE_URL
+        value: "https://api.apollo.io/api/v1"
+      - key: CORESIGNAL_BASE_URL
+        value: "https://api.coresignal.com" 

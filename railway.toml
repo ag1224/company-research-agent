@@ -1,0 +1,22 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "uvicorn api.company_research_fastapi:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "always"
+
+[variables]
+# Ensure Python output appears in Railway logs
+PYTHONUNBUFFERED = "1"
+# These will be set in Railway dashboard
+# APOLLO_API_KEY = ""
+# CORESIGNAL_API_KEY = ""
+# TAVILY_API_KEY = ""
+# OPENAI_API_KEY = ""
+# APOLLO_BASE_URL = "https://api.apollo.io/api/v1"
+# CORESIGNAL_BASE_URL = "https://api.coresignal.com"
+# EMAIL_USER = "your-email@gmail.com"
+# EMAIL_PASSWORD = "your-app-password"
+# GOOGLE_DRIVE_FOLDER_ID = "your-folder-id" 

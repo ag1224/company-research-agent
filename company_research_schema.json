@@ -1,0 +1,53 @@
+{
+    "company_name": "string",
+    "description": "string",
+    "location": {
+        "address": "string",
+        "city": "string",
+        "state": "string",
+        "country": "string",
+        "postal_code": "string"
+    },
+    "contact_details": {
+        "emails": [
+            "string"
+        ],
+        "phones": [
+            "string"
+        ]
+    },
+    "founding_date": "string",
+    "website": "string",
+    "linkedin_url": "string",
+    "industry": [
+        "string"
+    ],
+    "CEO": {
+        "name": "string",
+        "year_joined": "string",
+        "linkedin_url": "string"
+    },
+    "keywords(top 5)": [
+        "string"
+    ],
+    "employee_count": {
+        "min": "number",
+        "max": "number",
+        "current": "number"
+    },
+    "annual_revenue": "string",
+    "funding": {
+        "total_rounds": "number",
+        "total_amount_raised": "string",
+        "rounds": [
+            {
+                "type": "string",
+                "amount": "string",
+                "date": "string",
+                "investors": [
+                    "string"
+                ]
+            }
+        ]
+    }
+}

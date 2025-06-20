@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Research Report Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+        }
+
+
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e1e1;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Tab Styles */
+        .tab-container {
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e1e1e1;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Drive Files Styles */
+        .files-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-action-btn {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-action-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .loading-files {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .no-files {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                max-width: 95%;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .tab {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .file-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Company Research Report</h1>
+            <p>Generate comprehensive company analysis reports using advanced AI and multi-source data</p>
+        </div>
+
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('generate')">Generate Report</button>
+                <button class="tab" onclick="switchTab('files')">View Reports</button>
+            </div>
+
+            <div id="generateTab" class="tab-content active">
+                <form id="researchForm">
+                    <div class="form-group">
+                        <label for="website">Company Website *</label>
+                        <input type="url" id="website" name="website" placeholder="https://example.com or example.com"
+                            required>
+                        <div class="help-text">Enter the company's website URL to analyze</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Your Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="your.email@company.com" required>
+                        <div class="help-text">We'll send the PDF report to this email address</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="loading-spinner" id="loadingSpinner"></span>
+                        <span id="btnText">Generate Report</span>
+                    </button>
+                </form>
+
+                <div class="message" id="messageDiv">
+                    <span id="messageText"></span>
+                </div>
+            </div>
+
+            <div id="filesTab" class="tab-content">
+                <button class="refresh-btn" onclick="loadDriveFiles()">🔄 Refresh Files</button>
+
+                <div id="filesContent">
+                    <div class="loading-files">
+                        Click "Refresh Files" to load reports from Google Drive
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Powered by CoreSignal, Apollo & Tavily APIs</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('researchForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const messageDiv = document.getElementById('messageDiv');
+        const messageText = document.getElementById('messageText');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const website = document.getElementById('website').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            // Basic validation
+            if (!website || !email) {
+                showMessage('Please fill in all required fields.', 'error');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            // Set loading state
+            setLoadingState(true);
+            hideMessage();
+
+            try {
+                // Call the Multi-Source Research API (background version)
+                const response = await fetch('/api/multi-source-research-background', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        website: website,
+                        email: email
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Success case for background processing
+                    let successMessage = result.message || '🎉 Success! Your report generation has started.';
+
+                    if (result.estimated_time) {
+                        successMessage += `\n\n⏱️ Estimated completion time: ${result.estimated_time}`;
+                    }
+
+                    if (email) {
+                        successMessage += `\n\n📧 You'll receive an email at: ${email}`;
+                    }
+
+                    showMessage(successMessage, 'success');
+
+                    // Reset form after successful submission
+                    setTimeout(() => {
+                        form.reset();
+                        hideMessage();
+                    }, 5000);
+
+                } else {
+                    // Error case
+                    const errorMessage = result.detail || 'Failed to generate report. Please try again.';
+                    showMessage(`❌ Error: ${errorMessage}`, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('❌ Network error. Please check your connection and try again.', 'error');
+            } finally {
+                setLoadingState(false);
+            }
+        });
+
+        function setLoadingState(loading) {
+            submitBtn.disabled = loading;
+            if (loading) {
+                loadingSpinner.style.display = 'inline-block';
+                btnText.textContent = 'Generating Report...';
+            } else {
+                loadingSpinner.style.display = 'none';
+                btnText.textContent = 'Generate Report';
+            }
+        }
+
+        function showMessage(message, type) {
+            messageText.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+
+            // Auto-hide error messages after 8 seconds
+            if (type === 'error') {
+                setTimeout(() => {
+                    hideMessage();
+                }, 8000);
+            }
+        }
+
+        function hideMessage() {
+            messageDiv.style.display = 'none';
+        }
+
+        // Tab functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Load files from Google Drive
+        async function loadDriveFiles() {
+            const filesContent = document.getElementById('filesContent');
+
+            // Show loading state
+            filesContent.innerHTML = '<div class="loading-files">📁 Loading files from Google Drive...</div>';
+
+            try {
+                const response = await fetch('/api/drive-files');
+                const result = await response.json();
+
+                if (response.ok) {
+                    displayFiles(result);
+                } else {
+                    filesContent.innerHTML = `<div class="no-files">❌ Error: ${result.detail || 'Failed to load files'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+                filesContent.innerHTML = '<div class="no-files">❌ Network error. Please check your connection.</div>';
+            }
+        }
+
+        // Display files in the UI
+        function displayFiles(data) {
+            const filesContent = document.getElementById('filesContent');
+
+            if (!data.files || data.files.length === 0) {
+                filesContent.innerHTML = '<div class="no-files">📂 No files found in the Google Drive folder</div>';
+                return;
+            }
+
+            let html = `<div class="files-list">`;
+            html += `<div style="margin-bottom: 15px; color: #666; font-size: 14px;">
+                        📊 Found ${data.file_count} file(s) in Google Drive folder
+                     </div>`;
+
+            data.files.forEach(file => {
+                const fileSize = file.size ? formatFileSize(file.size) : 'Unknown size';
+                const modifiedDate = file.modifiedTime ? new Date(file.modifiedTime).toLocaleDateString() : 'Unknown date';
+
+                html += `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">📄 ${file.name}</div>
+                            <div class="file-meta">
+                                📅 Modified: ${modifiedDate} | 📏 Size: ${fileSize}
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            ${file.webViewLink ? `<a href="${file.webViewLink}" target="_blank" class="file-action-btn">🔍 View</a>` : ''}
+                            ${file.webContentLink ? `<a href="${file.webContentLink}" target="_blank" class="file-action-btn">⬇️ Download</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            filesContent.innerHTML = html;
+        }
+
+        // Format file size in human readable format
+        function formatFileSize(bytes) {
+            if (!bytes || bytes === 0) return '0 Bytes';
+
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Auto-format website URL
+        document.getElementById('website').addEventListener('blur', function () {
+            let website = this.value.trim();
+            if (website && !website.startsWith('http://') && !website.startsWith('https://')) {
+                // Add https:// if no protocol specified
+                this.value = 'https://' + website;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.DS_Store
+
+# Virtual environments
+.venv
+.ruff_cache
+.DS_Store
+.env
+
+.cursor
+results/
+pdfs/
+
+# Environment variables and sensitive files
+.env
+.env.local
+.env.production
+service_account.json
+*.key
+*.pem
+
+# Deployment and cloud specific
+.vercel
+.railway
+fly.toml.bak
